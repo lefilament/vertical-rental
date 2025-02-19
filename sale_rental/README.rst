@@ -30,9 +30,9 @@ Sale Rental
 
 With this module, you can rent products with Odoo. This module supports:
 
-- regular rentals.
-- rental extensions.
-- sale of rented products.
+-  regular rentals.
+-  rental extensions.
+-  sale of rented products.
 
 **Table of contents**
 
@@ -60,11 +60,11 @@ Usage
 In a sale order line (form view, not tree view), if you select a rental
 service, you can:
 
-- create a new rental with a start date and an end date: when the sale
-  order is confirmed, it will generate a delivery order and an incoming
-  shipment.
-- extend an existing rental: the incoming shipment will be postponed to
-  the end date of the extension.
+-  create a new rental with a start date and an end date: when the sale
+   order is confirmed, it will generate a delivery order and an incoming
+   shipment.
+-  extend an existing rental: the incoming shipment will be postponed to
+   the end date of the extension.
 
 In a sale order line, if you select a product that has a corresponding
 rental service, you can decide to sell the rented product that the
@@ -77,11 +77,11 @@ Known issues / Roadmap
 
 This module has the following limitations:
 
-- No support for planning/agenda of the rented products (i.e. you can't
-  rely on this module to check your capacity to rent a product for the
-  selected dates when you create a quote)
-- The unit of measure of the rental services must be *Day* (the rental
-  per hour / per week / per month is not supported for the moment)
+-  No support for planning/agenda of the rented products (i.e. you can't
+   rely on this module to check your capacity to rent a product for the
+   selected dates when you create a quote)
+-  The unit of measure of the rental services must be *Day* (the rental
+   per hour / per week / per month is not supported for the moment)
 
 Bug Tracker
 ===========
@@ -105,10 +105,10 @@ Authors
 Contributors
 ------------
 
-- Alexis de Lattre <alexis.delattre@akretion.com>
-- Sodexis <dev@sodexis.com>
-- Danh Vo <https://github.com/danhvophuong>
-- Kiril Vangelovski <kiril@lambda-is.com>
+-  Alexis de Lattre <alexis.delattre@akretion.com>
+-  Sodexis <dev@sodexis.com>
+-  Danh Vo <https://github.com/danhvophuong>
+-  Kiril Vangelovski <kiril@lambda-is.com>
 
 Maintainers
 -----------

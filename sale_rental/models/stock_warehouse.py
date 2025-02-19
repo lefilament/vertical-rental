@@ -73,13 +73,13 @@ class StockWarehouse(models.Model):
         if not self.rental_in_location_id:
             raise UserError(
                 _(
-                    "The Rental Input stock location is not set on the " "warehouse {}"
+                    "The Rental Input stock location is not set on the warehouse {}"
                 ).format(self.name)
             )
         if not self.rental_out_location_id:
             raise UserError(
                 _(
-                    "The Rental Output stock location is not set on the " "warehouse {}"
+                    "The Rental Output stock location is not set on the warehouse {}"
                 ).format(self.name)
             )
         rental_pull_rule = {
