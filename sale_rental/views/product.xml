@@ -10,34 +10,43 @@
         <field name="model">product.product</field>
         <field name="inherit_id" ref="product.product_normal_form_view" />
         <field name="arch" type="xml">
-            <group name="sale" position="after">
-                <group
+            <page name="sales" position="after">
+                <page
                     name="rental"
                     string="Rental"
-                    invisible="detailed_type != 'service'"
+                    invisible="not sale_ok and detailed_type=='service'"
                 >
-                    <field name="rented_product_id" />
-                </group>
-                <group
-                    string="Rental Services"
-                    name="rental_services"
-                    invisible="type == 'service'"
-                >
-                    <button
-                        colspan="2"
-                        type="action"
-                        name="%(sale_rental.create_rental_product_action)d"
-                        string="Create Rental Service"
-                    />
-                    <field
-                        colspan="2"
-                        name="rental_service_ids"
-                        nolabel="1"
-                        readonly="1"
-                        invisible="rental_service_ids == []"
-                    />
-                </group>
-            </group>
+                    <group>
+                        <group
+                            name="rental_product"
+                            invisible="detailed_type != 'service'"
+                        >
+                            <field name="rented_product_id" />
+                        </group>
+                        <group
+                            name="rental_services"
+                            string="Rental Services"
+                            invisible="detailed_type == 'service'"
+                            col="1"
+                            colspan="3"
+                        >
+                            <field
+                                colspan="2"
+                                name="rental_service_ids"
+                                nolabel="1"
+                                readonly="1"
+                                invisible="rental_service_ids == []"
+                            />
+                            <button
+                                colspan="2"
+                                type="action"
+                                name="%(sale_rental.create_rental_product_action)d"
+                                string="Create Rental Service"
+                            />
+                        </group>
+                    </group>
+                </page>
+            </page>
         </field>
     </record>
 
@@ -54,13 +63,13 @@
                 >
                     <group>
                         <group
-                            name="rental-service"
+                            name="rental-product"
                             invisible="detailed_type != 'service' or product_variant_count &gt; 1"
                         >
                             <field name="rented_product_tmpl_id" />
                         </group>
                         <group
-                            name="rental-product"
+                            name="rental-services"
                             string="Rental Services"
                             col="1"
                             colspan="3"
