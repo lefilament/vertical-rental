@@ -188,6 +188,7 @@
         parent="sale.sale_order_menu"
         action="sale_rental_action"
         sequence="25"
+        groups="sales_team.group_sale_salesman"
     />
 
 </odoo>
