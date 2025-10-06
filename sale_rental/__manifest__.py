@@ -25,6 +25,8 @@
         "views/rental_period.xml",
         "views/sale_rental.xml",
         "wizard/create_rental_product_view.xml",
+        "wizard/rental_report_dashboard_view.xml",
+        "wizard/rental_report_wizard_view.xml",
         "views/product.xml",
         "views/res_config_settings_views.xml",
         "views/sale_order.xml",
