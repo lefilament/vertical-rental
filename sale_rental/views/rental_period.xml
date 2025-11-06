@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-    <record id="view_rental_period_tree" model="ir.ui.view">
-        <field name="name">rental.period.tree</field>
+    <record id="view_rental_period_list" model="ir.ui.view">
+        <field name="name">rental.period.list</field>
         <field name="model">rental.period</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="sequence" widget="handle" />
                 <field name="name" />
                 <field name="code" />
                 <field name="hours_per_unit" />
                 <field name="active" />
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -71,7 +71,7 @@
     <record id="action_rental_periods" model="ir.actions.act_window">
         <field name="name">Rental Period</field>
         <field name="res_model">rental.period</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <menuitem

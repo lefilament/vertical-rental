@@ -13,7 +13,8 @@ class RentalPeriod(models.Model):
     active = fields.Boolean(default=True)
 
     # Standard unit used to convert duration -> hours
-    # Example: hour=1, day=24, week=168, month=730 (approximately), year=8760 (approximately)
+    # Example: hour=1, day=24, week=168,
+    # month=730 (approximately), year=8760 (approximately)
     hours_per_unit = fields.Float(required=True, default=1.0)
 
     _sql_constraints = [
