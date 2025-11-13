@@ -369,7 +369,7 @@ ul.auto-toc {
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !! source digest: sha256:ba2abe11bd525be0990d3cbdf39dda8661bafb160f55e7c2474c2988d782055c
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
-<p><a class="reference external image-reference" href="https://odoo-community.org/page/development-status"><img alt="Beta" src="https://img.shields.io/badge/maturity-Beta-yellow.png" /></a> <a class="reference external image-reference" href="http://www.gnu.org/licenses/agpl-3.0-standalone.html"><img alt="License: AGPL-3" src="https://img.shields.io/badge/licence-AGPL--3-blue.png" /></a> <a class="reference external image-reference" href="https://github.com/OCA/vertical-rental/tree/16.0/sale_rental"><img alt="OCA/vertical-rental" src="https://img.shields.io/badge/github-OCA%2Fvertical--rental-lightgray.png?logo=github" /></a> <a class="reference external image-reference" href="https://translation.odoo-community.org/projects/vertical-rental-16-0/vertical-rental-16-0-sale_rental"><img alt="Translate me on Weblate" src="https://img.shields.io/badge/weblate-Translate%20me-F47D42.png" /></a> <a class="reference external image-reference" href="https://runboat.odoo-community.org/builds?repo=OCA/vertical-rental&amp;target_branch=16.0"><img alt="Try me on Runboat" src="https://img.shields.io/badge/runboat-Try%20me-875A7B.png" /></a></p>
+<p><a class="reference external image-reference" href="https://odoo-community.org/page/development-status"><img alt="Beta" src="https://img.shields.io/badge/maturity-Beta-yellow.png" /></a> <a class="reference external image-reference" href="http://www.gnu.org/licenses/agpl-3.0-standalone.html"><img alt="License: AGPL-3" src="https://img.shields.io/badge/licence-AGPL--3-blue.png" /></a> <a class="reference external image-reference" href="https://github.com/OCA/vertical-rental/tree/18.0/sale_rental"><img alt="OCA/vertical-rental" src="https://img.shields.io/badge/github-OCA%2Fvertical--rental-lightgray.png?logo=github" /></a> <a class="reference external image-reference" href="https://translation.odoo-community.org/projects/vertical-rental-18-0/vertical-rental-18-0-sale_rental"><img alt="Translate me on Weblate" src="https://img.shields.io/badge/weblate-Translate%20me-F47D42.png" /></a> <a class="reference external image-reference" href="https://runboat.odoo-community.org/builds?repo=OCA/vertical-rental&amp;target_branch=18.0"><img alt="Try me on Runboat" src="https://img.shields.io/badge/runboat-Try%20me-875A7B.png" /></a></p>
 <p>With this module, you can rent products with Odoo. This module supports:</p>
 <ul class="simple">
 <li>regular rentals.</li>
@@ -420,12 +420,10 @@ rental service, you can decide to sell the rented product that the
 customer already has. If the sale order is confirmed, the incoming
 shipment will be cancelled and a new delivery order will be created with
 a stock move from <em>Rental Out</em> to <em>Customers</em>.</p>
-
 <p>You can configure Rental Periods under Sales ▸ Configuration ▸ Rental
 Period. A rental period defines the unit of time (Hour, Day, Week,
 Month, …) with its conversion into hours. These periods are used to
 compute rental duration.</p>
-
 <p>You can configure Rental Pricing under Sales ▸ Products ▸ Rental
 Pricing. For each rental service product, you define a price per rental
 period. When you create a rental order line, the system selects the
@@ -440,8 +438,6 @@ selected period, the system will warn the user.</p>
 <li>No support for planning/agenda of the rented products (i.e. you can’t
 rely on this module to check your capacity to rent a product for the
 selected dates when you create a quote)</li>
-<li>The unit of measure of the rental services must be <em>Day</em> (the rental
-per hour / per week / per month is not supported for the moment)</li>
 </ul>
 </div>
 <div class="section" id="bug-tracker">
@@ -449,7 +445,7 @@ per hour / per week / per month is not supported for the moment)</li>
 <p>Bugs are tracked on <a class="reference external" href="https://github.com/OCA/vertical-rental/issues">GitHub Issues</a>.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us to smash it by providing a detailed and welcomed
-<a class="reference external" href="https://github.com/OCA/vertical-rental/issues/new?body=module:%20sale_rental%0Aversion:%2016.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**">feedback</a>.</p>
+<a class="reference external" href="https://github.com/OCA/vertical-rental/issues/new?body=module:%20sale_rental%0Aversion:%2018.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**">feedback</a>.</p>
 <p>Do not contact contributors directly about support or help with technical issues.</p>
 </div>
 <div class="section" id="credits">
@@ -482,7 +478,7 @@ mission is to support the collaborative development of Odoo features and
 promote its widespread use.</p>
 <p>Current <a class="reference external" href="https://odoo-community.org/page/maintainer-role">maintainer</a>:</p>
 <p><a class="reference external image-reference" href="https://github.com/alexis-via"><img alt="alexis-via" src="https://github.com/alexis-via.png?size=40px" /></a></p>
-<p>This module is part of the <a class="reference external" href="https://github.com/OCA/vertical-rental/tree/16.0/sale_rental">OCA/vertical-rental</a> project on GitHub.</p>
+<p>This module is part of the <a class="reference external" href="https://github.com/OCA/vertical-rental/tree/18.0/sale_rental">OCA/vertical-rental</a> project on GitHub.</p>
 <p>You are welcome to contribute. To learn how please visit <a class="reference external" href="https://odoo-community.org/page/Contribute">https://odoo-community.org/page/Contribute</a>.</p>
 </div>
 </div>

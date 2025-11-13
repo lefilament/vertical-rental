@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="action_rental_report_by_product" model="ir.actions.act_window">
-    <field name="name">Rental • By Product</field>
+        <field name="name">Rental • By Product</field>
         <field name="res_model">sale.rental</field>
         <field name="view_mode">pivot,graph</field>
         <field name="view_id" ref="view_rental_report_by_product_pivot" />

@@ -1,57 +1,62 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-
-  <record id="view_order_form" model="ir.ui.view">
-    <field name="name">sale_rental.view_order_form</field>
-    <field name="model">sale.order</field>
-    <field name="inherit_id" ref="sale_start_end_dates.view_order_form" />
-    <field name="arch" type="xml">
-      <xpath
+    <record id="sale_rental_view_order_form" model="ir.ui.view">
+        <field name="name">sale_rental.view_order_form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale_start_end_dates.view_order_form" />
+        <field name="arch" type="xml">
+            <xpath
                 expr="//field[@name='order_line']/form//field[@name='start_date']"
                 position="attributes"
             >
-        <attribute name="invisible">1</attribute>
-      </xpath>
-      <xpath
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath
                 expr="//field[@name='order_line']/form//field[@name='end_date']"
                 position="attributes"
             >
-        <attribute name="invisible">1</attribute>
-      </xpath>
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath
+                expr="//field[@name='order_line']/form//field[@name='number_of_days']"
+                position="attributes"
+            >
+                <attribute name="invisible">1</attribute>
+            </xpath>
 
-      <xpath
+            <xpath
                 expr="//field[@name='order_line']/tree//field[@name='start_date']"
                 position="attributes"
             >
-        <attribute name="invisible">1</attribute>
-      </xpath>
-      <xpath
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath
                 expr="//field[@name='order_line']/tree//field[@name='end_date']"
                 position="attributes"
             >
-        <attribute name="invisible">1</attribute>
-      </xpath>
-      <xpath
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath
                 expr="//field[@name='order_line']/tree//field[@name='number_of_days']"
                 position="attributes"
             >
-        <attribute name="invisible">1</attribute>
-      </xpath>
+                <attribute name="invisible">1</attribute>
+            </xpath>
 
-      <xpath
+            <xpath
                 expr="//field[@name='order_line']/form//field[@name='product_id']"
                 position="after"
             >
-        <field name="available_rental_period_ids" invisible="1" />
+                <field name="available_rental_period_ids" invisible="1" />
 
-        <field
+                <field
                     name="rental_type"
                     readonly="state != 'draft'"
                     invisible="not rental"
                     required="rental"
                 />
 
-        <field
+                <field
                     name="extension_rental_id"
                     options="{'no_quick_create': True, 'no_create_edit': True}"
                     readonly="state != 'draft'"
@@ -60,25 +65,24 @@
                     domain="[('rental_product_id', '=', product_id), ('state', 'in', ('ordered', 'out')), ('company_id', '=', company_id)]"
                 />
 
-        <field
+                <field
                     name="rental_period_id"
                     options="{'no_create_edit': False}"
                     attrs="{'invisible': [('must_have_dates', '=', False)], 'required': [('must_have_dates', '=', True)]}"
                     domain="[('id','in', available_rental_period_ids)]"
                 />
 
-        <field
+                <field
                     name="start_datetime"
                     attrs="{'invisible': [('rental','=',False)], 'required': [('rental','=',True)]}"
                 />
 
-        <field
+                <field
                     name="end_datetime"
                     attrs="{'invisible': [('rental','=',False)], 'required': [('rental','=',True)]}"
                 />
 
-
-        <field
+                <field
                     name="sell_rental_id"
                     readonly="state != 'draft'"
                     options="{'no_quick_create': True, 'no_create_edit': True}"
@@ -86,72 +90,71 @@
                     domain="[('rented_product_id', '=', product_id), ('state', '=', 'out'), ('company_id', '=', company_id)]"
                 />
 
-
                 <field name="rental" invisible="1" />
                 <field name="can_sell_rental" invisible="1" />
-      </xpath>
+            </xpath>
 
-      <xpath
+            <xpath
                 expr="//field[@name='order_line']/form//label[@for='product_uom_qty']"
                 position="before"
             >
-        <field
-                    name="rental_qty"
-                    attrs="{'invisible': [('rental', '=', False)], 'required': [('rental', '=', True)]}"
-                />
-        <field
+                <field
                     name="duration"
                     readonly="1"
                     attrs="{'invisible': [('rental','=',False)], 'required': [('rental','=',True)]}"
                 />
-        <field
+                <field
+                    name="price_unit"
+                    readonly="1"
+                    attrs="{'invisible': [('rental','=',False)], 'required': [('rental','=',True)]}"
+                />
+                <field
                     name="pricing_hint"
                     readonly="1"
                     attrs="{'invisible': [('rental','=',False)], 'required': [('rental','=',True)]}"
                 />
-      </xpath>
+            </xpath>
 
-      <xpath
+            <xpath
                 expr="//field[@name='order_line']/tree/field[@name='name']"
                 position="after"
             >
-        <field name="rental" invisible="1" />
-        <field
+                <field name="rental" invisible="1" />
+                <field
                     name="rental_type"
                     attrs="{'invisible': [('rental','=',False)]}"
                     optional="hide"
                 />
-        <field
+                <field
                     name="start_datetime"
                     attrs="{'invisible': [('rental','=',False)]}"
                     optional="show"
                 />
-        <field
+                <field
                     name="end_datetime"
                     attrs="{'invisible': [('rental','=',False)]}"
                     optional="show"
                 />
-        <field
+                <field
                     name="rental_period_id"
                     attrs="{'invisible': [('rental','=',False)]}"
                     optional="hide"
                 />
-        <field
+                <field
                     name="duration"
                     attrs="{'invisible': [('rental','=',False)]}"
                     optional="hide"
                 />
-        <field
+                <field
                     name="pricing_hint"
                     attrs="{'invisible': [('rental','=',False)]}"
                     optional="hide"
                 />
-      </xpath>
+            </xpath>
 
-      <xpath expr="//field[@name='order_line']/tree" position="attributes">
-        <attribute name="editable" />
-      </xpath>
-    </field>
-  </record>
-
+            <xpath expr="//field[@name='order_line']/tree" position="attributes">
+                <attribute name="editable" />
+            </xpath>
+        </field>
+    </record>
 </odoo>
