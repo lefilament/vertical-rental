@@ -271,7 +271,9 @@ class SaleRental(models.Model):
     def _compute_available_hours(self):
         for rental in self:
             if rental.start_datetime and rental.end_datetime:
-                rental.available_hours = (rental.end_datetime - rental.start_datetime).total_seconds() / 3600
+                rental.available_hours = (
+                    rental.end_datetime - rental.start_datetime
+                ).total_seconds() / 3600
             else:
                 rental.available_hours = 0.0
 

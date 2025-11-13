@@ -8,7 +8,7 @@
             <xpath expr="//block[@id='connectors_setting_container']" position="after">
                 <block title="Sale Rental" name="sale_rental">
                     <setting id="reminder_days" help="ental Reminder Days">
-                        <field name="reminder_days"/>
+                        <field name="reminder_days" />
                     </setting>
                 </block>
             </xpath>

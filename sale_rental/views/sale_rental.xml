@@ -243,7 +243,12 @@
         <field name="model">sale.rental</field>
         <field name="arch" type="xml">
             <pivot string="By Time (Month)">
-                <field name="start_datetime" type="row" interval="month" string="Month" />
+                <field
+                    name="start_datetime"
+                    type="row"
+                    interval="month"
+                    string="Month"
+                />
                 <field
                     name="actual_rental_hours"
                     type="measure"
