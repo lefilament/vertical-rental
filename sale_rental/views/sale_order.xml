@@ -1,48 +1,16 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  Copyright 2014-2021 Akretion (http://www.akretion.com/)
+  @author Alexis de Lattre <alexis.delattre@akretion.com>
+  Copyright 2016-2021 Sodexis
+  Copyright 2026- Le Filament (https://le-filament.com)
+  License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+-->
 <odoo>
     <record id="sale_rental_view_order_form" model="ir.ui.view">
         <field name="name">sale_rental.view_order_form</field>
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale_start_end_dates.view_order_form" />
         <field name="arch" type="xml">
-            <xpath
-                expr="//field[@name='order_line']/form//field[@name='start_date']"
-                position="attributes"
-            >
-                <attribute name="invisible">1</attribute>
-            </xpath>
-            <xpath
-                expr="//field[@name='order_line']/form//field[@name='end_date']"
-                position="attributes"
-            >
-                <attribute name="invisible">1</attribute>
-            </xpath>
-            <xpath
-                expr="//field[@name='order_line']/form//field[@name='number_of_days']"
-                position="attributes"
-            >
-                <attribute name="invisible">1</attribute>
-            </xpath>
-
-            <xpath
-                expr="//field[@name='order_line']/list//field[@name='start_date']"
-                position="attributes"
-            >
-                <attribute name="column_invisible">1</attribute>
-            </xpath>
-            <xpath
-                expr="//field[@name='order_line']/list//field[@name='end_date']"
-                position="attributes"
-            >
-                <attribute name="column_invisible">1</attribute>
-            </xpath>
-            <xpath
-                expr="//field[@name='order_line']/list//field[@name='number_of_days']"
-                position="attributes"
-            >
-                <attribute name="column_invisible">1</attribute>
-            </xpath>
-
             <xpath
                 expr="//field[@name='order_line']/form//label[@for='product_uom_qty']"
                 position="before"
@@ -64,71 +32,11 @@
                 />
 
                 <field
-                    name="rental_period_id"
-                    options="{'no_create_edit': False}"
-                    invisible="not must_have_dates"
-                    required="must_have_dates"
-                    domain="[('id','in', available_rental_period_ids)]"
-                />
-
-                <field
-                    name="start_datetime"
-                    invisible="not rental"
-                    required="rental"
-                    readonly="state not in ('draft','sent')"
-                />
-
-                <field
-                    name="end_datetime"
-                    invisible="not rental"
-                    required="rental"
-                    readonly="state not in ('draft','sent')"
-                />
-
-                <field
-                    name="sell_rental_id"
+                    name="rental_qty"
                     readonly="state != 'draft'"
-                    options="{'no_quick_create': True, 'no_create_edit': True}"
-                    invisible="not can_sell_rental"
-                    domain="[('rented_product_id', '=', product_id), ('state', '=', 'out'), ('company_id', '=', company_id)]"
-                />
-
-                <field
-                    name="duration"
-                    readonly="1"
                     invisible="not rental"
                     required="rental"
                 />
-                <field
-                    name="price_unit"
-                    readonly="1"
-                    invisible="not rental"
-                    required="rental"
-                />
-                <field
-                    name="pricing_hint"
-                    readonly="1"
-                    invisible="not rental"
-                    required="rental"
-                />
-            </xpath>
-
-            <xpath
-                expr="//field[@name='order_line']/list/field[@name='name']"
-                position="after"
-            >
-                <field name="rental" invisible="1" />
-                <field name="rental_type" invisible="not rental" optional="hide" />
-                <field name="start_datetime" invisible="not rental" optional="show" />
-                <field name="end_datetime" invisible="not rental" optional="show" />
-                <field
-                    name="rental_period_id"
-                    invisible="not rental"
-                    readonly="state != 'draft'"
-                    optional="hide"
-                />
-                <field name="duration" invisible="not rental" optional="hide" />
-                <field name="pricing_hint" invisible="not rental" optional="hide" />
             </xpath>
 
             <xpath expr="//field[@name='order_line']/list" position="attributes">

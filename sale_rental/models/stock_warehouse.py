@@ -34,9 +34,6 @@ class StockWarehouse(models.Model):
     )
     rental_allowed = fields.Boolean()
     rental_route_id = fields.Many2one("stock.route", string="Rental Route")
-    sell_rented_product_route_id = fields.Many2one(
-        "stock.route", string="Sell Rented Product Route"
-    )
 
     @api.onchange("rental_allowed")
     def _onchange_rental_allowed(self):
@@ -45,7 +42,6 @@ class StockWarehouse(models.Model):
             self.rental_in_location_id = False
             self.rental_out_location_id = False
             self.rental_route_id = False
-            self.sell_rented_product_route_id = False
 
     def _get_rental_push_pull_rules(self):
         self.ensure_one()
@@ -57,21 +53,6 @@ class StockWarehouse(models.Model):
             rental_route = rental_routes and rental_routes[0] or False
         if not rental_route:
             raise UserError(self.env._("Can't find any generic 'Rent' route."))
-        try:
-            sell_rented_product_route = self.env.ref(
-                "sale_rental.route_warehouse0_sell_rented_product"
-            )
-        except Exception:
-            sell_rented_product_routes = route_obj.search(
-                [("name", "=", self.env._("Sell Rented Product"))]
-            )
-            sell_rented_product_route = (
-                sell_rented_product_routes and sell_rented_product_routes[0] or False
-            )
-        if not sell_rented_product_route:
-            raise UserError(
-                self.env._("Can't find any generic 'Sell Rented Product' route.")
-            )
         if not self.rental_in_location_id:
             raise UserError(
                 self.env._(
@@ -112,23 +93,9 @@ class StockWarehouse(models.Model):
             "warehouse_id": self.id,
             "company_id": self.company_id.id,
         }
-        customer_loc = self.env.ref("stock.stock_location_customers")
-        sell_rented_product_pull_rule = {
-            "name": self._format_rulename(
-                self.rental_out_location_id, customer_loc, ""
-            ),
-            "location_src_id": self.rental_out_location_id.id,
-            "location_dest_id": customer_loc.id,
-            "route_id": sell_rented_product_route.id,
-            "action": "pull",
-            "picking_type_id": self.out_type_id.id,
-            "warehouse_id": self.id,
-            "company_id": self.company_id.id,
-        }
         res = [
             rental_pull_rule,
             rental_push_rule,
-            sell_rented_product_pull_rule,
         ]
         return res
 
@@ -208,21 +175,17 @@ class StockWarehouse(models.Model):
     def write(self, vals):
         if "rental_allowed" in vals:
             rental_route = self.env.ref("sale_rental.route_warehouse0_rental")
-            sell_rented_route = self.env.ref(
-                "sale_rental.route_warehouse0_sell_rented_product"
-            )
             if vals.get("rental_allowed"):
                 self._create_rental_locations()
                 self.write(
                     {
                         "route_ids": [(4, rental_route.id)],
                         "rental_route_id": rental_route.id,
-                        "sell_rented_product_route_id": sell_rented_route.id,
                     }
                 )
                 rental_rules = self.env["stock.rule"].search(
                     [
-                        ("route_id", "in", [rental_route.id, sell_rented_route.id]),
+                        ("route_id", "=", rental_route.id),
                         ("active", "=", False),
                     ]
                 )
@@ -237,11 +200,8 @@ class StockWarehouse(models.Model):
                         [
                             (
                                 "route_id",
-                                "in",
-                                (
-                                    wh.rental_route_id.id,
-                                    wh.sell_rented_product_route_id.id,
-                                ),
+                                "=",
+                                wh.rental_route_id.id
                             ),
                             ("company_id", "=", wh.company_id.id),
                         ]
@@ -251,7 +211,6 @@ class StockWarehouse(models.Model):
                         {
                             "route_ids": [(3, rental_route.id)],
                             "rental_route_id": False,
-                            "sell_rented_product_route_id": False,
                         }
                     )
         return super().write(vals)

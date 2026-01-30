@@ -20,10 +20,6 @@
                 <group name="rental" string="Rental">
                     <field name="rental_allowed" />
                     <field name="rental_route_id" invisible="not rental_allowed" />
-                    <field
-                        name="sell_rented_product_route_id"
-                        invisible="not rental_allowed"
-                    />
                 </group>
             </group>
         </field>

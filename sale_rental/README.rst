@@ -111,6 +111,7 @@ Authors
 
 * Akretion
 * Sodexis
+* Le Filament
 
 Contributors
 ------------

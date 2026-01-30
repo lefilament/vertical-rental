@@ -1,6 +1,7 @@
 # Copyright 2014-2021 Akretion France (http://www.akretion.com)
 # @author Alexis de Lattre <alexis.delattre@akretion.com>
 # Copyright 2016-2021 Sodexis (http://sodexis.com)
+# Copyright 2026- Le Filament (https://le-filament.com)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from odoo import fields, models
@@ -19,6 +20,7 @@ class StockRule(models.Model):
             and move_to_copy.sale_line_id
             and move_to_copy.sale_line_id.rental_type == "new_rental"
         ):
-            rental_end_date = move_to_copy.sale_line_id.end_datetime
+            rental_end_date = move_to_copy.sale_line_id.end_date
             res["date"] = fields.Datetime.to_datetime(rental_end_date)
+            res["product_uom_qty"] = move_to_copy.sale_line_id.rental_qty
         return res

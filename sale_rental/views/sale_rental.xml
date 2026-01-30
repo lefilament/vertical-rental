@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <!--
   Copyright 2014-2021 Akretion (http://www.akretion.com/)
   @author Alexis de Lattre <alexis.delattre@akretion.com>
@@ -21,15 +20,15 @@
                 <sheet>
                     <group name="main">
                         <group name="main-left">
-                            <field name="start_order_id" readonly="True" />
-                            <field name="partner_id" readonly="True" />
+                            <field name="start_order_id" />
+                            <field name="partner_id" />
                             <field name="rented_product_id" />
-                            <field name="rental_product_id" readonly="True" />
-                            <field name="items_qty" readonly="True" />
+                            <field name="rental_product_id" />
+                            <field name="rental_qty" />
                         </group>
                         <group name="main-right">
-                            <field name="start_datetime" />
-                            <field name="end_datetime" />
+                            <field name="start_date" />
+                            <field name="end_date" />
                             <field name="start_order_line_id" />
                             <field
                                 name="company_id"
@@ -40,29 +39,25 @@
                     </group>
                     <group name="transfer">
                         <group name="stock_out" string="Delivery">
-                            <field name="out_picking_id" readonly="True" />
-                            <field name="out_move_id" readonly="True" />
+                            <field name="out_picking_id" />
+                            <field name="out_move_id" />
                             <field name="out_state" />
                         </group>
                         <group name="stock_in" string="Return">
-                            <field name="in_picking_id" readonly="True" />
-                            <field name="in_move_id" readonly="True" />
+                            <field name="in_picking_id" />
+                            <field name="in_move_id" />
                             <field name="in_state" />
                         </group>
                     </group>
                     <notebook>
                         <page name="extensions" string="Rental Extensions">
-                            <field
-                                name="extension_order_line_ids"
-                                readonly="True"
-                                nolabel="1"
-                            >
+                            <field name="extension_order_line_ids" nolabel="1">
                                 <list>
                                     <field name="order_id" />
                                     <field name="order_partner_id" />
                                     <field name="name" />
-                                    <field name="start_datetime" />
-                                    <field name="end_datetime" />
+                                    <field name="start_date" />
+                                    <field name="end_date" />
                                     <field name="product_uom_qty" />
                                     <field
                                         name="product_uom"
@@ -70,23 +65,9 @@
                                         groups="uom.group_uom"
                                     />
                                     <field name="price_subtotal" sum="Total" />
-                                    <field name="state" readonly="True" />
+                                    <field name="state" />
                                 </list>
                             </field>
-                        </page>
-                        <page name="sell" string="Sell Rented Product">
-                            <group name="sell_move_out">
-                                <field name="sell_move_id" readonly="True" />
-                                <field name="sell_state" readonly="True" />
-                                <field name="sell_picking_id" readonly="True" />
-                            </group>
-                            <separator string="Selling Order Line" />
-                            <field
-                                name="sell_order_line_ids"
-                                readonly="True"
-                                nolabel="1"
-                                colspan="2"
-                            />
                         </page>
                     </notebook>
                 </sheet>
@@ -101,13 +82,12 @@
             <list create="false" edit="false">
                 <field name="start_order_id" optional="show" />
                 <field name="partner_id" />
-                <field name="rented_product_id" readonly="True" />
-                <field name="items_qty" readonly="True" />
-                <field name="start_datetime" readonly="True" />
-                <field name="out_state" string="Delivery" readonly="True" />
-                <field name="end_datetime" readonly="True" />
-                <field name="in_state" string="Return" readonly="True" />
-                <field name="sell_state" optional="hide" />
+                <field name="rented_product_id" />
+                <field name="rental_qty" />
+                <field name="start_date" />
+                <field name="out_state" string="Delivery" />
+                <field name="end_date" />
+                <field name="in_state" string="Return" />
                 <field
                     name="company_id"
                     groups="base.group_multi_company"
@@ -116,7 +96,6 @@
                 <field
                     name="state"
                     widget="badge"
-                    readonly="True"
                     decoration-success="state == 'in'"
                     decoration-info="state == 'ordered'"
                     decoration-warning="state == 'out'"
@@ -141,12 +120,6 @@
                     domain="[('state', '=', 'ordered')]"
                 />
                 <filter name="out" string="Out" domain="[('state', '=', 'out')]" />
-                <filter
-                    name="sell_progress"
-                    string="Sell in progress"
-                    domain="[('state', '=', 'sell_progress')]"
-                />
-                <filter name="sold" string="Sold" domain="[('state', '=', 'sold')]" />
                 <filter name="in" string="Back In" domain="[('state', '=', 'in')]" />
                 <group string="Group By" name="groupby">
                     <filter
@@ -160,14 +133,14 @@
                         context="{'group_by': 'state'}"
                     />
                     <filter
-                        name="start_datetime_groupby"
+                        name="start_date_groupby"
                         string="Start Date"
-                        context="{'group_by': 'start_datetime'}"
+                        context="{'group_by': 'start_date'}"
                     />
                     <filter
-                        name="end_datetime_groupby"
+                        name="end_date_groupby"
                         string="End Date"
-                        context="{'group_by': 'end_datetime'}"
+                        context="{'group_by': 'end_date'}"
                     />
                 </group>
             </search>
@@ -179,9 +152,9 @@
         <field name="model">sale.rental</field>
         <field name="arch" type="xml">
             <graph string="Rentals" type="bar" stacked="True">
-                <field name="start_datetime" type="row" interval="month" />
+                <field name="start_date" type="row" interval="month" />
                 <field name="state" type="row" />
-                <field name="items_qty" type="measure" />
+                <field name="rental_qty" type="measure" />
             </graph>
         </field>
     </record>
@@ -192,8 +165,8 @@
         <field name="arch" type="xml">
             <pivot>
                 <field name="rented_product_id" type="row" />
-                <field name="start_datetime" interval="month" type="col" />
-                <field name="items_qty" type="measure" />
+                <field name="start_date" interval="month" type="col" />
+                <field name="rental_qty" type="measure" />
             </pivot>
         </field>
     </record>
@@ -204,8 +177,8 @@
         <field name="arch" type="xml">
             <calendar
                 string="Rental Schedule"
-                date_start="start_datetime"
-                date_stop="end_datetime"
+                date_start="start_date"
+                date_stop="end_date"
                 mode="month"
                 create="0"
                 color="partner_id"
@@ -230,65 +203,4 @@
         sequence="25"
         groups="sales_team.group_sale_salesman"
     />
-
-    <record id="view_rental_report_by_product_pivot" model="ir.ui.view">
-        <field name="name">sale.rental.report.by.product.pivot</field>
-        <field name="model">sale.rental</field>
-        <field name="arch" type="xml">
-            <pivot string="By Product">
-                <field name="rented_product_id" type="row" string="Product" />
-                <field name="in_stock" type="measure" string="In Stock" />
-                <field name="revenue" type="measure" string="Revenue (Period)" />
-                <field
-                    name="utilization_rate"
-                    type="measure"
-                    string="Utilization Rate (%)"
-                />
-                <field name="items_qty" type="measure" string="Units Rented" />
-            </pivot>
-        </field>
-    </record>
-
-    <record id="view_rental_report_by_time_pivot" model="ir.ui.view">
-        <field name="name">sale.rental.report.by.time.pivot</field>
-        <field name="model">sale.rental</field>
-        <field name="arch" type="xml">
-            <pivot string="By Time (Month)">
-                <field
-                    name="start_datetime"
-                    type="row"
-                    interval="month"
-                    string="Month"
-                />
-                <field
-                    name="actual_rental_hours"
-                    type="measure"
-                    string="Total Rental Hours"
-                />
-                <field
-                    name="utilization_rate"
-                    type="measure"
-                    string="Utilization Rate (%)"
-                />
-                <field name="revenue" type="measure" string="Revenue" />
-            </pivot>
-        </field>
-    </record>
-
-    <record id="view_rental_report_by_customer_pivot" model="ir.ui.view">
-        <field name="name">sale.rental.report.by.customer.pivot</field>
-        <field name="model">sale.rental</field>
-        <field name="arch" type="xml">
-            <pivot string="By Customer">
-                <field name="partner_id" type="row" string="Customer" />
-                <field name="items_qty" type="measure" string="Products Rented" />
-                <field
-                    name="actual_rental_hours"
-                    type="measure"
-                    string="Rental Duration (hrs)"
-                />
-                <field name="revenue" type="measure" string="Revenue Contribution" />
-            </pivot>
-        </field>
-    </record>
 </odoo>

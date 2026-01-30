@@ -60,22 +60,3 @@ class TestSaleRental(TransactionCase):
         self.assertTrue(rental_in_pick)
         rental = self.env["sale.rental"].search([("start_order_line_id", "=", sol.id)])
         self.assertTrue(rental)
-
-        # Sell the same product/rental
-        so_form = Form(self.env["sale.order"])
-        so_form.partner_id = self.test_partner
-        with so_form.order_line.new() as line:
-            line.product_id = self.test_rental_prod.rented_product_id
-            line.product_uom_qty = 1
-            line.sell_rental_id = rental
-        so2 = so_form.save()
-        line_vals = {
-            "product_id": self.test_rental_prod.rented_product_id.id,
-            "name": "Test",
-            "display_type": False,
-            "product_uom_qty": 1,
-            "sell_rental_id": rental.id,
-        }
-        so2.write({"order_line": [(0, 0, line_vals)]})
-        so2.action_confirm()
-        self.assertEqual(rental_in_pick.state, "cancel")
