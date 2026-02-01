@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
 
-    rental = fields.Boolean(default=False)
+    rental = fields.Boolean(compute="_compute_rental", store=True, precompute=True)
     rental_type = fields.Selection(
         [("new_rental", "New Rental"), ("rental_extension", "Rental Extension")],
     )
@@ -40,16 +40,6 @@ class SaleOrderLine(models.Model):
             "The rental quantity must be positive or null.",
         )
     ]
-
-    @api.onchange("rental_qty", "number_of_days", "product_id", "rental_type")
-    def _onchange_set_product_uom_qty_from_rental(self):
-        for line in self:
-            if (
-                line.rental_type in ("new_rental", "rental_extension")
-                and line.product_id
-                and line.product_id.rented_product_id
-            ):
-                line.product_uom_qty = line.rental_qty * line.number_of_days
 
     @api.constrains(
         "rental_type",
@@ -95,26 +85,6 @@ class SaleOrderLine(models.Model):
                         )
                     )
 
-                expected = line.rental_qty * line.number_of_days
-                rounding = line.product_uom.rounding if line.product_uom else 0.01
-                if (
-                    float_compare(
-                        line.product_uom_qty, expected, precision_rounding=rounding
-                    )
-                    != 0
-                ):
-                    raise ValidationError(
-                        self.env._(
-                            "On the sale order line with product '%(name)s' "
-                            "the Product Quantity (%(uom_qty)s) should be the "
-                            "number of days (%(days)s) "
-                            "multiplied by the Rental Quantity (%(rental_qty)s).",
-                            name=line.product_id.display_name,
-                            uom_qty=line.product_uom_qty,
-                            days=line.number_of_days,
-                            rental_qty=line.rental_qty,
-                        )
-                    )
                 if not line.product_uom or float_is_zero(
                     line.product_uom_qty, precision_rounding=line.product_uom.rounding
                 ):
@@ -222,65 +192,58 @@ class SaleOrderLine(models.Model):
         vals = super()._prepare_procurement_values(group_id=group_id)
         return vals
 
+    @api.depends("product_id")
+    def _compute_rental(self):
+        for line in self:
+            if line.product_id and line.product_id.rented_product_id:
+                line.rental = True
+                if not line.rental_type:
+                    line.rental_type = "new_rental"
+            else:
+                line.rental = False
+                line.rental_type = False
+                line.rental_qty = 0
+                line.extension_rental_id = False
+
     @api.onchange("product_id", "rental_qty")
     def rental_product_id_change(self):
         res = {}
-        if self.product_id:
-            if self.product_id.rented_product_id:
-                self.rental = True
-                if not self.rental_type:
-                    self.rental_type = "new_rental"
-                elif (
-                    self.rental_type == "new_rental"
-                    and self.rental_qty
-                    and self.order_id.warehouse_id
-                ):
-                    product_uom = self.product_id.rented_product_id.uom_id
-                    warehouse = self.order_id.warehouse_id
-                    rental_in_location = warehouse.rental_in_location_id
-                    rented_product_ctx = self.with_context(
-                        location=rental_in_location.id
-                    ).product_id.rented_product_id
-                    in_location_available_qty = (
-                        rented_product_ctx.qty_available
-                        - rented_product_ctx.outgoing_qty
-                    )
-                    compare_qty = float_compare(
-                        in_location_available_qty,
-                        self.rental_qty,
-                        precision_rounding=product_uom.rounding,
-                    )
-                    if compare_qty == -1:
-                        res["warning"] = {
-                            "title": self.env._("Not enough stock !"),
-                            "message": self.env._(
-                                "You want to rent %(rental_qty).2f  %(uom_name)s but "
-                                "you only have %(available_qty).2f %(uom_name)s "
-                                "currently available on the  stock location "
-                                "'%(rental_name)s' ! Make sure that you get some "
-                                "units back in the mean time or re-supply the "
-                                "stock location '%(rental_name)s'.",
-                                rental_qty=self.rental_qty,
-                                uom_name=product_uom.name,
-                                available_qty=in_location_available_qty,
-                                rental_name=rental_in_location.name,
-                            ),
-                        }
-            elif self.product_id.rental_service_ids:
-                self.rental = False
-                self.rental_type = False
-                self.rental_qty = 0
-                self.extension_rental_id = False
-            else:
-                self.rental_type = False
-                self.rental = False
-                self.rental_qty = 0
-                self.extension_rental_id = False
-        else:
-            self.rental_type = False
-            self.rental = False
-            self.rental_qty = 0
-            self.extension_rental_id = False
+        if (
+            self.rental
+            and self.rental_type == "new_rental"
+            and self.rental_qty
+            and self.order_id.warehouse_id
+        ):
+            product_uom = self.product_id.rented_product_id.uom_id
+            warehouse = self.order_id.warehouse_id
+            rental_in_location = warehouse.rental_in_location_id
+            rented_product_ctx = self.with_context(
+                location=rental_in_location.id
+            ).product_id.rented_product_id
+            in_location_available_qty = (
+                rented_product_ctx.qty_available - rented_product_ctx.outgoing_qty
+            )
+            compare_qty = float_compare(
+                in_location_available_qty,
+                self.rental_qty,
+                precision_rounding=product_uom.rounding,
+            )
+            if compare_qty == -1:
+                res["warning"] = {
+                    "title": self.env._("Not enough stock !"),
+                    "message": self.env._(
+                        "You want to rent %(rental_qty).2f  %(uom_name)s but "
+                        "you only have %(available_qty).2f %(uom_name)s "
+                        "currently available on the  stock location "
+                        "'%(rental_name)s' ! Make sure that you get some "
+                        "units back in the mean time or re-supply the "
+                        "stock location '%(rental_name)s'.",
+                        rental_qty=self.rental_qty,
+                        uom_name=product_uom.name,
+                        available_qty=in_location_available_qty,
+                        rental_name=rental_in_location.name,
+                    ),
+                }
         return res
 
     @api.onchange("extension_rental_id")
@@ -309,12 +272,6 @@ class SaleOrderLine(models.Model):
                 self.start_date = initial_end_date + relativedelta(seconds=1)
 
             self.rental_qty = self.extension_rental_id.rental_qty
-
-    @api.onchange("rental_qty", "number_of_days", "product_id")
-    def rental_qty_number_of_days_change(self):
-        if self.product_id.rented_product_id:
-            qty = self.rental_qty * self.number_of_days
-            self.product_uom_qty = qty
 
     @api.onchange("rental_type")
     def rental_type_change(self):
