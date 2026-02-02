@@ -22,13 +22,19 @@ class StockWarehouse(models.Model):
     )
     rental_in_location_id = fields.Many2one(
         "stock.location",
-        "Rental In",
+        "Rental Source",
         check_company=True,
         domain="[('usage', '=', 'internal'), ('company_id', '=', company_id)]",
     )
     rental_out_location_id = fields.Many2one(
         "stock.location",
         "Rental Out",
+        check_company=True,
+        domain="[('usage', '=', 'customer'), ('company_id', '=', company_id)]",
+    )
+    rental_return_location_id = fields.Many2one(
+        "stock.location",
+        "Rental Return",
         check_company=True,
         domain="[('usage', '=', 'internal'), ('company_id', '=', company_id)]",
     )
@@ -41,6 +47,7 @@ class StockWarehouse(models.Model):
             self.rental_view_location_id = False
             self.rental_in_location_id = False
             self.rental_out_location_id = False
+            self.rental_return_location_id = False
             self.rental_route_id = False
 
     def _get_rental_push_pull_rules(self):
@@ -56,7 +63,8 @@ class StockWarehouse(models.Model):
         if not self.rental_in_location_id:
             raise UserError(
                 self.env._(
-                    "The Rental Input stock location is not set on the " "warehouse %s",
+                    "The Rental Source stock location is not set on the "
+                    "warehouse %s",
                     self.name,
                 )
             )
@@ -68,6 +76,8 @@ class StockWarehouse(models.Model):
                     self.name,
                 )
             )
+        if not self.rental_return_location_id:
+            self.rental_return_location_id = self.rental_in_location_id
         rental_pull_rule = {
             "name": self._format_rulename(
                 self.rental_in_location_id, self.rental_out_location_id, ""
@@ -83,10 +93,10 @@ class StockWarehouse(models.Model):
         }
         rental_push_rule = {
             "name": self._format_rulename(
-                self.rental_out_location_id, self.rental_in_location_id, ""
+                self.rental_out_location_id, self.rental_return_location_id, ""
             ),
             "location_src_id": self.rental_out_location_id.id,
-            "location_dest_id": self.rental_in_location_id.id,
+            "location_dest_id": self.rental_return_location_id.id,
             "route_id": rental_route.id,
             "action": "push",
             "picking_type_id": self.in_type_id.id,
@@ -149,11 +159,13 @@ class StockWarehouse(models.Model):
                         "New in rental stock location created ID %d", in_loc.id
                     )
                 wh.rental_in_location_id = in_loc.id
+                wh.rental_return_location_id = in_loc.id
             if not wh.rental_out_location_id:
                 out_loc = slo.with_context(lang="en_US").search(
                     [
                         ("name", "ilike", "Rental Out"),
                         ("location_id", "=", wh.rental_view_location_id.id),
+                        ("usage", "=", "customer"),
                         ("company_id", "=", self.company_id.id),
                     ],
                     limit=1,
@@ -164,6 +176,7 @@ class StockWarehouse(models.Model):
                             "name": "Rental Out",
                             "location_id": wh.rental_view_location_id.id,
                             "company_id": self.company_id.id,
+                            "usage": "customer",
                         }
                     )
                     slo.browse(out_loc.id).name = self.env._("Rental Out")
@@ -198,11 +211,7 @@ class StockWarehouse(models.Model):
                 for wh in self:
                     rules_to_archive = self.env["stock.rule"].search(
                         [
-                            (
-                                "route_id",
-                                "=",
-                                wh.rental_route_id.id
-                            ),
+                            ("route_id", "=", wh.rental_route_id.id),
                             ("company_id", "=", wh.company_id.id),
                         ]
                     )

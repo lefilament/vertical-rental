@@ -184,14 +184,6 @@ class SaleOrderLine(models.Model):
         groups.stock_move_ids._push_apply()
         return res
 
-    def _prepare_procurement_values(self, group_id=False):
-        """
-        Overriding this function to changethe route
-        on selling rental product
-        """
-        vals = super()._prepare_procurement_values(group_id=group_id)
-        return vals
-
     @api.depends("product_id")
     def _compute_rental(self):
         for line in self:
